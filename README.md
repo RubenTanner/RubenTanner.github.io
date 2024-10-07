@@ -1,2 +1,2 @@
-# RubenTanner.github.io
-Destroyers Strength Tracker
+# AF-SandC-Tracker
+ Destroyers Strength Tracker
