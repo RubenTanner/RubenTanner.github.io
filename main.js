@@ -1,13 +1,14 @@
 const form = document.getElementById("strength-form");
 const resultsDiv = document.getElementById("results");
 const exportButton = document.getElementById("export-data");
+const passwordInput = document.getElementById("password");
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const name = document.getElementById("name").value;
-  const weight = document.getElementById("weight").value; // Get weight value
-  const position = document.getElementById("position").value; // Get position value
+  const weight = document.getElementById("weight").value;
+  const position = document.getElementById("position").value;
   const bench = document.getElementById("bench").value;
   const squat = document.getElementById("squat").value;
 
@@ -28,8 +29,8 @@ form.addEventListener("submit", (event) => {
 
   const newData = {
     name: name,
-    weight: weight, // Include weight in the data
-    position: position, // Include position in the data
+    weight: weight,
+    position: position,
     bench: bench,
     squat: squat,
     date: new Date().toLocaleDateString(),
@@ -81,10 +82,18 @@ function getWeekNumber(d) {
 }
 
 exportButton.addEventListener("click", () => {
-  const weeklyData = JSON.parse(localStorage.getItem("weeklyData")) || [];
-  const [year, week] = getWeekNumber(new Date());
-  const filename = `strength-data_${year}_week${week}.json`;
-  exportToJSON(weeklyData, filename);
+  const enteredPassword = passwordInput.value;
+  const correctPassword = "DestroyersBaby!"; // Replace with your actual password
+
+  if (enteredPassword === correctPassword) {
+    const weeklyData = JSON.parse(localStorage.getItem("weeklyData")) || [];
+    const [year, week] = getWeekNumber(new Date());
+    const filename = `strength-data_${year}_week${week}.json`;
+    exportToJSON(weeklyData, filename);
+    passwordInput.value = "";
+  } else {
+    alert("Incorrect password. Please try again.");
+  }
 });
 
 setInterval(() => {
