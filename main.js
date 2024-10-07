@@ -1,16 +1,17 @@
 const form = document.getElementById("strength-form");
 const resultsDiv = document.getElementById("results");
+const exportButton = document.getElementById("export-data");
 
 form.addEventListener("submit", (event) => {
-  event.preventDefault(); // Prevent default form submission
+  event.preventDefault();
 
   const name = document.getElementById("name").value;
+  const weight = document.getElementById("weight").value; // Get weight value
+  const position = document.getElementById("position").value; // Get position value
   const bench = document.getElementById("bench").value;
   const squat = document.getElementById("squat").value;
-  // ... get values for other exercises
 
-  // Basic data validation (you can add more)
-  if (!name || !bench || !squat) {
+  if (!name || !weight || !position || !bench || !squat) {
     alert("Please fill in all fields.");
     return;
   }
@@ -23,38 +24,38 @@ form.addEventListener("submit", (event) => {
     return;
   }
 
-  // 1. Get existing data from localStorage or initialize an empty array
   let weeklyData = JSON.parse(localStorage.getItem("weeklyData")) || [];
 
-  // 2. Add the new data
   const newData = {
     name: name,
+    weight: weight, // Include weight in the data
+    position: position, // Include position in the data
     bench: bench,
     squat: squat,
-    // ... other exercises
-    date: new Date().toLocaleDateString(), // Add the current date
+    date: new Date().toLocaleDateString(),
   };
   weeklyData.push(newData);
 
-  // 3. Save the updated data back to localStorage
   localStorage.setItem("weeklyData", JSON.stringify(weeklyData));
+  localStorage.setItem(submissionKey, true);
 
-  localStorage.setItem(submissionKey, true); // Set the flag to prevent duplicate submission
-
-  // Display the results (we'll create a function for this)
   displayResults(weeklyData);
-
-  // Clear the form
   form.reset();
 });
 
 function displayResults(data) {
-  // Create a table to display the results
   let tableHTML =
-    "<table><thead><tr><th>Name</th><th>Bench</th><th>Squat</th><th>Date</th></tr></thead><tbody>";
+    "<table><thead><tr><th>Name</th><th>Weight</th><th>Position</th><th>Bench</th><th>Squat</th><th>Date</th></tr></thead><tbody>";
 
   data.forEach((entry) => {
-    tableHTML += `<tr><td>${entry.name}</td><td>${entry.bench}</td><td>${entry.squat}</td><td>${entry.date}</td></tr>`;
+    tableHTML += `<tr>
+                        <td>${entry.name}</td>
+                        <td>${entry.weight}</td> 
+                        <td>${entry.position}</td> 
+                        <td>${entry.bench}</td>
+                        <td>${entry.squat}</td>
+                        <td>${entry.date}</td>
+                      </tr>`;
   });
 
   tableHTML += "</tbody></table>";
@@ -72,27 +73,26 @@ function exportToJSON(data, filename) {
 }
 
 function getWeekNumber(d) {
-  // Copy date so don't modify original
   d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  // Set to nearest Thursday: current date + 4 - current day number
-  // Make Sunday's day number 7
   d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-  // Get first day of year
   var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  // Calculate full weeks to nearest Thursday
   var weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-  // Return array of year and week number
   return [d.getUTCFullYear(), weekNo];
 }
 
-// Schedule weekly export (using a simple timeout for now)
+exportButton.addEventListener("click", () => {
+  const weeklyData = JSON.parse(localStorage.getItem("weeklyData")) || [];
+  const [year, week] = getWeekNumber(new Date());
+  const filename = `strength-data_${year}_week${week}.json`;
+  exportToJSON(weeklyData, filename);
+});
+
 setInterval(() => {
   const weeklyData = JSON.parse(localStorage.getItem("weeklyData")) || [];
   const [year, week] = getWeekNumber(new Date());
   const filename = `strength-data_${year}_week${week}.json`;
   exportToJSON(weeklyData, filename);
-  localStorage.removeItem("weeklyData"); // Clear data after export
-}, 7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
+  localStorage.removeItem("weeklyData");
+}, 7 * 24 * 60 * 60 * 1000);
 
-// Initial display of results when the page loads
 displayResults(JSON.parse(localStorage.getItem("weeklyData")) || []);
