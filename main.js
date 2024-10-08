@@ -11,8 +11,9 @@ form.addEventListener("submit", (event) => {
   const position = document.getElementById("position").value;
   const bench = document.getElementById("bench").value;
   const squat = document.getElementById("squat").value;
+  const deadlift = document.getElementById("deadlift").value;
 
-  if (!name || !weight || !position || !bench || !squat) {
+  if (!name || !weight || !position || !bench || !deadlift || !squat) {
     alert("Please fill in all fields.");
     return;
   }
@@ -33,6 +34,7 @@ form.addEventListener("submit", (event) => {
     position: position,
     bench: bench,
     squat: squat,
+    deadlift: deadlift,
     date: new Date().toLocaleDateString(),
   };
   weeklyData.push(newData);
@@ -46,7 +48,7 @@ form.addEventListener("submit", (event) => {
 
 function displayResults(data) {
   let tableHTML =
-    "<table><thead><tr><th>Name</th><th>Weight</th><th>Position</th><th>Bench</th><th>Squat</th><th>Date</th></tr></thead><tbody>";
+    "<table><thead><tr><th>Name</th><th>Weight</th><th>Position</th><th>Bench</th><th>Squat</th><th>Deadlift</th><th>Date</th></tr></thead><tbody>";
 
   data.forEach((entry) => {
     tableHTML += `<tr>
@@ -55,6 +57,7 @@ function displayResults(data) {
                         <td>${entry.position}</td> 
                         <td>${entry.bench}</td>
                         <td>${entry.squat}</td>
+                        <td>${entry.deadlift}</td>
                         <td>${entry.date}</td>
                       </tr>`;
   });
@@ -83,7 +86,7 @@ function getWeekNumber(d) {
 
 exportButton.addEventListener("click", () => {
   const enteredPassword = passwordInput.value;
-  const correctPassword = "DestroyersBaby!"; // Replace with your actual password
+  const correctPassword = "DestroyersBaby!";
 
   if (enteredPassword === correctPassword) {
     const weeklyData = JSON.parse(localStorage.getItem("weeklyData")) || [];
