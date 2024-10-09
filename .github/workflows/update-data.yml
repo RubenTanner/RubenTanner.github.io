@@ -2,7 +2,7 @@ name: Update Strength Data
 
 on:
   schedule:
-    - cron: '*/05 * * * *' # Run every 5 mins
+    - cron: '*/5 * * * *' # Run every 5 mins
 
 jobs:
   update_data:
