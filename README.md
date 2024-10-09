@@ -1,2 +1,3 @@
-# AF-SandC-Tracker
- Destroyers Strength Tracker
+# Destroyers S&C Tracker
+
+Destroyers Strength Tracker
