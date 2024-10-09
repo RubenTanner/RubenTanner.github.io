@@ -1,0 +1,22 @@
+name: Update Strength Data
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # Run every 30 mins
+
+jobs:
+  update_data:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 'lts/*' # Use the latest LTS version of Node.js
+
+    - name: Run script to update data
+      run: node updateData.js
+      env:
+        TOKEN: ${{ secrets.TOKEN }} # Access the secret token
